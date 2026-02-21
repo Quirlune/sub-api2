@@ -1,0 +1,217 @@
+/* ===== Sub-API Processor Extension Styles ===== */
+
+/* ---------- Settings Panel ---------- */
+#sub-api-settings {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+#sub-api-settings .inline-drawer-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    cursor: pointer;
+    padding: 6px 0;
+}
+
+#sub-api-settings .inline-drawer-header b {
+    font-size: 1em;
+}
+
+#sub-api-settings .inline-drawer-content {
+    display: none;
+    flex-direction: column;
+    gap: 8px;
+    padding: 5px 0 5px 10px;
+}
+
+#sub-api-settings .inline-drawer-content.open {
+    display: flex;
+}
+
+#sub-api-settings label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 3px;
+    font-size: 0.9em;
+    color: var(--SmartThemeBodyColor, #ccc);
+}
+
+#sub-api-settings input[type="text"],
+#sub-api-settings textarea,
+#sub-api-settings select {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 6px 8px;
+    border: 1px solid var(--SmartThemeBorderColor, #555);
+    border-radius: 5px;
+    background: var(--SmartThemeBlurTintColor, #222);
+    color: var(--SmartThemeBodyColor, #ccc);
+    font-family: monospace;
+    font-size: 0.85em;
+    resize: vertical;
+}
+
+#sub-api-settings select {
+    font-family: inherit;
+    cursor: pointer;
+    resize: none;
+}
+
+#sub-api-settings textarea {
+    min-height: 50px;
+}
+
+#sub-api-settings .sub-api-checkbox-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+#sub-api-settings .sub-api-checkbox-row label {
+    margin-bottom: 0;
+    font-weight: normal;
+}
+
+/* Regex group editor */
+.sub-api-regex-group {
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    border-radius: 6px;
+    padding: 8px;
+    margin-bottom: 6px;
+    position: relative;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.sub-api-regex-group .regex-row {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-bottom: 4px;
+}
+
+.sub-api-regex-group .regex-row input {
+    flex: 1;
+}
+
+.sub-api-regex-group .regex-row .regex-label {
+    min-width: 40px;
+    font-size: 0.8em;
+    color: var(--SmartThemeBodyColor, #aaa);
+}
+
+/* Buttons */
+.sub-api-btn {
+    padding: 4px 10px;
+    border: 1px solid var(--SmartThemeBorderColor, #555);
+    border-radius: 4px;
+    background: var(--SmartThemeBlurTintColor, #333);
+    color: var(--SmartThemeBodyColor, #ccc);
+    cursor: pointer;
+    font-size: 0.85em;
+    transition: background 0.15s;
+}
+
+.sub-api-btn:hover {
+    background: var(--SmartThemeQuoteColor, #555);
+}
+
+.sub-api-btn.danger {
+    color: #ff6b6b;
+    border-color: #ff6b6b55;
+}
+
+.sub-api-btn.danger:hover {
+    background: #ff6b6b22;
+}
+
+.sub-api-btn-row {
+    display: flex;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+/* Section separator */
+.sub-api-section {
+    border-bottom: 1px solid var(--SmartThemeBorderColor, #333);
+    padding-bottom: 8px;
+    margin-bottom: 8px;
+}
+
+.sub-api-section:last-child {
+    border-bottom: none;
+}
+
+/* ---------- Task Block ---------- */
+.sub-api-task-block {
+    border: 1px solid var(--SmartThemeBorderColor, #444);
+    border-radius: 8px;
+    padding: 8px;
+    margin-bottom: 8px;
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.sub-api-task-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+}
+
+.sub-api-task-header .sub-api-checkbox-row {
+    flex: 1;
+}
+
+.sub-api-task-header .task-name-input {
+    flex: 1;
+    font-weight: 600;
+    font-family: inherit;
+}
+
+.sub-api-task-header-btns {
+    display: flex;
+    gap: 4px;
+    flex-shrink: 0;
+}
+
+.sub-api-task-detail {
+    flex-direction: column;
+    gap: 6px;
+    margin-top: 8px;
+    padding-top: 8px;
+    border-top: 1px solid var(--SmartThemeBorderColor, #333);
+}
+
+/* Loading spinner */
+.sub-api-loading {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.85em;
+    color: var(--SmartThemeQuoteColor, #888);
+}
+
+.sub-api-loading::before {
+    content: '';
+    width: 14px;
+    height: 14px;
+    border: 2px solid var(--SmartThemeBorderColor, #555);
+    border-top-color: var(--SmartThemeQuoteColor, #888);
+    border-radius: 50%;
+    animation: sub-api-spin 0.8s linear infinite;
+}
+
+@keyframes sub-api-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Error state */
+.sub-api-error {
+    color: #ff6b6b;
+    font-size: 0.85em;
+    padding: 2px 0;
+}
