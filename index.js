@@ -457,6 +457,22 @@
     }
 
     // ===== Event Handlers =====
+    let renderDebounceTimer = null;
+    let isRendering = false;
+    function debouncedRenderAll(delay = 200) {
+        if (renderDebounceTimer) clearTimeout(renderDebounceTimer);
+        renderDebounceTimer = setTimeout(() => {
+            renderDebounceTimer = null;
+            isRendering = true;
+            try {
+                renderAllResults();
+            } finally {
+                // 延迟重置标志，确保 MutationObserver 不会立即再触发
+                setTimeout(() => { isRendering = false; }, 50);
+            }
+        }, delay);
+    }
+
     function setupEventListeners() {
         const { eventSource, event_types } = SillyTavern.getContext();
 
@@ -484,11 +500,64 @@
 
         eventSource.on(event_types.CHAT_CHANGED, () => {
             swipeFlag = false;
-            setTimeout(() => renderAllResults(), 300);
+            debouncedRenderAll(300);
         });
 
-        eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, () => {
-            setTimeout(() => renderAllResults(), 200);
+        // 各种消息重新渲染事件 —— 确保编辑/swipe/渲染后重新注入结果
+        eventSource.on(event_types.CHARACTER_MESSAGE_RENDERED, () => debouncedRenderAll());
+        if (event_types.USER_MESSAGE_RENDERED) {
+            eventSource.on(event_types.USER_MESSAGE_RENDERED, () => debouncedRenderAll());
+        }
+        if (event_types.MESSAGE_EDITED) {
+            eventSource.on(event_types.MESSAGE_EDITED, () => debouncedRenderAll());
+        }
+        if (event_types.MESSAGE_UPDATED) {
+            eventSource.on(event_types.MESSAGE_UPDATED, () => debouncedRenderAll());
+        }
+        if (event_types.MESSAGE_DELETED) {
+            eventSource.on(event_types.MESSAGE_DELETED, () => debouncedRenderAll());
+        }
+
+        // MutationObserver 作为兜底：当 mes_text 被重建时重新注入
+        setupMutationObserver();
+    }
+
+    function setupMutationObserver() {
+        const chatContainer = document.getElementById('chat');
+        if (!chatContainer) {
+            // 如果 chat 容器还没加载，延迟重试
+            setTimeout(setupMutationObserver, 500);
+            return;
+        }
+
+        const observer = new MutationObserver((mutations) => {
+            // 跳过自身渲染引起的 DOM 变化
+            if (isRendering) return;
+
+            // 检查是否有 mes_text 的内容被重建（子节点变化）
+            let needsReRender = false;
+            for (const mutation of mutations) {
+                if (mutation.type === 'childList') {
+                    const target = mutation.target;
+                    // 跳过我们自己注入的元素
+                    if (target.hasAttribute?.('data-sub-api-task')) continue;
+                    // 如果变化发生在 mes_text 内或 mes 块内
+                    if (target.classList?.contains('mes_text') ||
+                        target.closest?.('.mes_text') ||
+                        target.classList?.contains('mes')) {
+                        needsReRender = true;
+                        break;
+                    }
+                }
+            }
+            if (needsReRender) {
+                debouncedRenderAll(150);
+            }
+        });
+
+        observer.observe(chatContainer, {
+            childList: true,
+            subtree: true,
         });
     }
 
